@@ -231,9 +231,10 @@ const FullscreenYouTubeVideo: React.FC = () => {
 
   return (
     <div
-      className={`fixed top-0 left-0 w-screen h-screen overflow-hidden -z-10 bg-black ${
+      className={`fixed top-0 left-0 w-screen h-screen overflow-hidden bg-black ${
         showCursor || isMobile ? "cursor-default" : "cursor-none"
       }`}
+      style={{ zIndex: -1 }}
       onClick={enableSound}
     >
       {/* YouTube iframe */}
@@ -250,15 +251,15 @@ const FullscreenYouTubeVideo: React.FC = () => {
 
       {/* Tap to enable sound */}
       {!unmuted && (
-       <div
-  className={`absolute left-1/2 -translate-x-1/2 text-white bg-black/70 rounded-md text-center z-10 ${
-    isMobile 
-      ? "bottom-20 text-sm px-3 py-1.5" 
-      : "bottom-25 text-lg px-4 py-2"
-  }`}
->
-  🔊 Tap to enable sound
-</div>
+        <div
+          className={`absolute left-1/2 -translate-x-1/2 text-white bg-black/70 rounded-md text-center z-10 ${
+            isMobile 
+              ? "bottom-20 text-sm px-3 py-1.5" 
+              : "bottom-[100px] text-lg px-4 py-2"
+          }`}
+        >
+          🔊 Tap to enable sound
+        </div>
       )}
 
       {/* Progress Bar Container */}
@@ -267,8 +268,8 @@ const FullscreenYouTubeVideo: React.FC = () => {
           showCursor || isMobile ? "opacity-100" : "opacity-0"
         } ${
           isMobile 
-            ? "bottom-3.75 w-[90%] max-w-full" 
-            : "bottom-17.5 w-[80%] max-w-150"
+            ? "bottom-4 w-[90%]" 
+            : "bottom-[70px] w-[80%] max-w-[600px]"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
@@ -291,15 +292,23 @@ const FullscreenYouTubeVideo: React.FC = () => {
           {/* Draggable Circle */}
           <div
             className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full border-2 border-white transition-all duration-100 ease-linear cursor-grab touch-none ${
-              isMobile ? "w-4.5 h-4.5" : "w-3.5 h-3.5"
+              isMobile ? "w-[18px] h-[18px]" : "w-3.5 h-3.5"
             }`}
             style={{ left: `${percentage}%` }}
           />
         </div>
       </div>
 
-     
-      
+      {/* Keyboard hints - Desktop only */}
+      {!isMobile && (
+        <div
+          className={`absolute left-1/2 -translate-x-1/2 bottom-[30px] text-white text-sm bg-black/70 px-4 py-2 rounded-md whitespace-nowrap z-10 text-center max-w-[90%] overflow-hidden text-ellipsis transition-opacity duration-300 ${
+            showCursor ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          ⌨️ ← → (±10s) | ↑ ↓ (±30s) | 🖱️ Scroll (±10s) | Drag progress bar
+        </div>
+      )}
     </div>
   );
 };
