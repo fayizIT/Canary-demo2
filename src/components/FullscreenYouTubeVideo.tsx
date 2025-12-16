@@ -132,7 +132,7 @@ const FullscreenYouTubeVideo: React.FC = () => {
       }
     };
 
-    // Mouse wheel controls (desktop only)//
+    // Mouse wheel controls (desktop only)
     const handleWheel = (e: WheelEvent) => {
       if (isMobile) return;
       e.preventDefault();
@@ -229,6 +229,13 @@ const FullscreenYouTubeVideo: React.FC = () => {
 
   const percentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
+  // Format time as MM:SS
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div
       className={`fixed top-0 left-0 w-screen h-screen overflow-hidden bg-black ${
@@ -254,7 +261,7 @@ const FullscreenYouTubeVideo: React.FC = () => {
         <div
           className={`absolute left-1/2 -translate-x-1/2 text-white bg-black/70 rounded-md text-center z-10 ${
             isMobile 
-              ? "bottom-20 text-sm px-3 py-1.5" 
+              ? "bottom-24 text-sm px-3 py-1.5" 
               : "bottom-[100px] text-lg px-4 py-2"
           }`}
         >
@@ -268,16 +275,26 @@ const FullscreenYouTubeVideo: React.FC = () => {
           showCursor || isMobile ? "opacity-100" : "opacity-0"
         } ${
           isMobile 
-            ? "bottom-4 w-[90%]" 
+            ? "bottom-6 w-[92%]" 
             : "bottom-[70px] w-[80%] max-w-[600px]"
         }`}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Time Display - Mobile */}
+        {isMobile && duration > 0 && (
+          <div className="flex justify-between text-white text-xs mb-2 px-1">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+        )}
+
         {/* Progress Bar */}
         <div
           ref={progressBarRef}
-          className={`relative w-full bg-white/30 rounded overflow-visible touch-none cursor-pointer ${
-            isMobile ? "h-2" : "h-1.5"
+          className={`relative w-full rounded-full overflow-visible touch-none cursor-pointer ${
+            isMobile 
+              ? "h-3 bg-white/40 shadow-lg" 
+              : "h-1.5 bg-white/30"
           }`}
           onMouseDown={handleMouseDown}
           onTouchStart={handleTouchStart}
@@ -285,18 +302,30 @@ const FullscreenYouTubeVideo: React.FC = () => {
         >
           {/* Progress Fill */}
           <div
-            className="h-full bg-red-600 transition-all duration-100 ease-linear rounded"
+            className={`h-full bg-gradient-to-r from-red-500 to-red-600 transition-all duration-100 ease-linear rounded-full ${
+              isMobile ? "shadow-md" : ""
+            }`}
             style={{ width: `${percentage}%` }}
           />
           
-          {/* Draggable Circle */}
+          {/* Draggable Circle/Thumb */}
           <div
-            className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full border-2 border-white transition-all duration-100 ease-linear cursor-grab touch-none ${
-              isMobile ? "w-[18px] h-[18px]" : "w-3.5 h-3.5"
+            className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full border-2 border-white transition-all duration-100 ease-linear touch-none ${
+              isMobile 
+                ? "w-5 h-5 shadow-lg cursor-grab active:cursor-grabbing active:scale-110" 
+                : "w-3.5 h-3.5 cursor-grab"
             }`}
             style={{ left: `${percentage}%` }}
           />
         </div>
+
+        {/* Time Display - Desktop */}
+        {!isMobile && duration > 0 && (
+          <div className="flex justify-between text-white text-xs mt-1 px-1">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
+        )}
       </div>
 
       {/* Keyboard hints - Desktop only */}
