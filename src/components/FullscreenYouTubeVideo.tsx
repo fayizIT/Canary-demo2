@@ -241,7 +241,7 @@ const FullscreenYouTubeVideo: React.FC = () => {
       className={`fixed top-0 left-0 w-screen h-screen overflow-hidden bg-black ${
         showCursor || isMobile ? "cursor-default" : "cursor-none"
       }`}
-      style={{ zIndex: -1 }}
+      style={{ zIndex: 1 }}
       onClick={enableSound}
     >
       {/* YouTube iframe */}
@@ -254,37 +254,40 @@ const FullscreenYouTubeVideo: React.FC = () => {
         title="YouTube video"
         allow="autoplay"
         allowFullScreen
+        style={{ zIndex: 1 }}
       />
 
       {/* Tap to enable sound */}
       {!unmuted && (
         <div
-          className={`absolute left-1/2 -translate-x-1/2 text-white bg-black/70 rounded-md text-center z-10 ${
+          className={`absolute left-1/2 -translate-x-1/2 text-white bg-black/70 rounded-md text-center ${
             isMobile 
-              ? "bottom-24 text-sm px-3 py-1.5" 
+              ? "bottom-32 text-sm px-3 py-1.5" 
               : "bottom-[100px] text-lg px-4 py-2"
           }`}
+          style={{ zIndex: 1000 }}
         >
           🔊 Tap to enable sound
         </div>
       )}
 
-      {/* Progress Bar Container */}
+      {/* Progress Bar Container - ALWAYS VISIBLE ON MOBILE */}
       <div
-        className={`absolute left-1/2 -translate-x-1/2 pointer-events-auto z-10 transition-opacity duration-300 ${
-          showCursor || isMobile ? "opacity-100" : "opacity-0"
+        className={`fixed left-1/2 -translate-x-1/2 pointer-events-auto transition-opacity duration-300 ${
+          isMobile ? "opacity-100" : (showCursor ? "opacity-100" : "opacity-0")
         } ${
           isMobile 
-            ? "bottom-6 w-[92%]" 
+            ? "bottom-16 w-[88%]" 
             : "bottom-[70px] w-[80%] max-w-[600px]"
         }`}
+        style={{ zIndex: 1000 }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Time Display - Mobile */}
+        {/* Time Display - Mobile (Above slider) */}
         {isMobile && duration > 0 && (
-          <div className="flex justify-between text-white text-xs mb-2 px-1">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
+          <div className="flex justify-between text-white text-xs mb-2 px-1 font-medium">
+            <span className="bg-black/50 px-2 py-0.5 rounded">{formatTime(currentTime)}</span>
+            <span className="bg-black/50 px-2 py-0.5 rounded">{formatTime(duration)}</span>
           </div>
         )}
 
@@ -293,7 +296,7 @@ const FullscreenYouTubeVideo: React.FC = () => {
           ref={progressBarRef}
           className={`relative w-full rounded-full overflow-visible touch-none cursor-pointer ${
             isMobile 
-              ? "h-3 bg-white/40 shadow-lg" 
+              ? "h-3 bg-white/50 shadow-lg border border-white/20" 
               : "h-1.5 bg-white/30"
           }`}
           onMouseDown={handleMouseDown}
@@ -310,16 +313,16 @@ const FullscreenYouTubeVideo: React.FC = () => {
           
           {/* Draggable Circle/Thumb */}
           <div
-            className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full border-2 border-white transition-all duration-100 ease-linear touch-none ${
+            className={`absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white transition-all duration-100 ease-linear touch-none ${
               isMobile 
-                ? "w-5 h-5 shadow-lg cursor-grab active:cursor-grabbing active:scale-110" 
-                : "w-3.5 h-3.5 cursor-grab"
+                ? "w-6 h-6 bg-red-600 shadow-xl cursor-grab active:cursor-grabbing active:scale-125 active:shadow-2xl" 
+                : "w-3.5 h-3.5 bg-red-600 cursor-grab"
             }`}
-            style={{ left: `${percentage}%` }}
+            style={{ left: `${percentage}%`, zIndex: 1001 }}
           />
         </div>
 
-        {/* Time Display - Desktop */}
+        {/* Time Display - Desktop (Below slider) */}
         {!isMobile && duration > 0 && (
           <div className="flex justify-between text-white text-xs mt-1 px-1">
             <span>{formatTime(currentTime)}</span>
@@ -331,9 +334,10 @@ const FullscreenYouTubeVideo: React.FC = () => {
       {/* Keyboard hints - Desktop only */}
       {!isMobile && (
         <div
-          className={`absolute left-1/2 -translate-x-1/2 bottom-[30px] text-white text-sm bg-black/70 px-4 py-2 rounded-md whitespace-nowrap z-10 text-center max-w-[90%] overflow-hidden text-ellipsis transition-opacity duration-300 ${
+          className={`absolute left-1/2 -translate-x-1/2 bottom-[30px] text-white text-sm bg-black/70 px-4 py-2 rounded-md whitespace-nowrap text-center max-w-[90%] overflow-hidden text-ellipsis transition-opacity duration-300 ${
             showCursor ? "opacity-100" : "opacity-0"
           }`}
+          style={{ zIndex: 1000 }}
         >
           ⌨️ ← → (±10s) | ↑ ↓ (±30s) | 🖱️ Scroll (±10s) | Drag progress bar
         </div>
