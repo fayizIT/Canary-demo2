@@ -132,7 +132,7 @@ const FullscreenYouTubeVideo: React.FC = () => {
       }
     };
 
-    // Mouse wheel controls (desktop only)
+    // Mouse wheel controls (desktop only)//
     const handleWheel = (e: WheelEvent) => {
       if (isMobile) return;
       e.preventDefault();
